@@ -9,7 +9,7 @@ mbti_list = [
     "ISFJ", "ISFP", "ISTJ", "ISTP"
 ]
 
-# 규칙 기반 궁합 점수 계산
+# 점수 계산
 def calculate_score(m1, m2):
     if m1 == m2:
         return 85
@@ -20,7 +20,7 @@ def calculate_score(m1, m2):
     score += 10 if m1[3] != m2[3] else -5
     return max(50, min(100, 70 + score))
 
-# 설명 생성 + 이모지
+# 설명 생성
 def generate_description(m1, m2, score):
     if m1 == m2:
         return f"✨ 둘 다 {m1} 타입이라 서로를 깊이 이해하지만, 비슷한 점이 많아 가끔은 부딪힐 수도 있어요 💞"
@@ -42,16 +42,17 @@ for a, b in itertools.product(mbti_list, repeat=2):
 
 # Streamlit UI
 st.title("💞 MBTI 궁합 테스트 💌")
-st.write("두 사람의 MBTI를 선택하면 사랑스러운 궁합 점수와 설명을 확인할 수 있어요 💖")
 
 col1, col2 = st.columns(2)
 with col1:
-    mbti1 = st.selectbox("🌸 당신의 MBTI", mbti_list)
+    name1 = st.text_input("🌸 당신의 이름")
+    mbti1 = st.selectbox("당신의 MBTI", mbti_list)
 with col2:
-    mbti2 = st.selectbox("🌟 상대방 MBTI", mbti_list)
+    name2 = st.text_input("🌟 상대방 이름")
+    mbti2 = st.selectbox("상대방 MBTI", mbti_list)
 
 if st.button("💘 궁합 보기 💘"):
     result = mbti_compatibility[(mbti1, mbti2)]
     score_emoji = "💖" if result['score'] >= 90 else "💕" if result['score'] >= 80 else "💛" if result['score'] >= 70 else "💔"
-    st.subheader(f"{score_emoji} 궁합 점수: {result['score']}점 {score_emoji}")
+    st.subheader(f"{score_emoji} {name1} ❤️ {name2} 의 궁합 점수: {result['score']}점 {score_emoji}")
     st.write(result['desc'])
