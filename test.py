@@ -66,17 +66,25 @@ scary_stories = {
 }
 
 # =========================
-# 2) 피 흐르는 검은 배경 CSS / HTML
+# 2) 피 + 배경 이미지 + 글씨 깜빡임 CSS / HTML
 # =========================
-blood_css = """
+blood_and_ghost_css = """
 <style>
 [data-testid="stAppViewContainer"] {
-  background: #000 !important;
+  background: #000 url('https://i.ibb.co/Y8H0fG7/ghost-bats.png') no-repeat center top;
+  background-size: cover !important;
+  position: relative;
+  overflow: hidden;
 }
 [data-testid="stHeader"] { background: rgba(0,0,0,0) !important; }
 [data-testid="stSidebar"] { background: #000 !important; }
 h1, h2, h3, h4, h5, h6, p, li, span, label {
   color: #e6e6e6 !important;
+  animation: flicker 1.5s infinite;
+}
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+  20%, 22%, 24%, 55% { opacity: 0.3; }
 }
 :root { --blood: #8a0000; --blood-bright: #c40000; }
 #blood-overlay {
@@ -140,7 +148,7 @@ blood_html = """
 </div>
 """
 
-st.markdown(blood_css + blood_html, unsafe_allow_html=True)
+st.markdown(blood_and_ghost_css + blood_html, unsafe_allow_html=True)
 
 # =========================
 # 3) UI
