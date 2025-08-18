@@ -1,4 +1,5 @@
 import streamlit as st
+import random
 
 # =========================
 # 1) 무서운 이야기 데이터
@@ -152,11 +153,17 @@ st.markdown(blood_css + blood_html, unsafe_allow_html=True)
 # =========================
 # 3) UI
 # =========================
-st.title(" 무서운 이야기 ")
+st.title("🩸 무서운 이야기 ")
 st.caption("검은 어둠 속에서, 피가 천천히 흘러내린다...")
 
-options = ["고르시오"] + list(scary_stories.keys())
+options = ["-- 제목을 선택하세요 --"] + list(scary_stories.keys())
 choice = st.selectbox("이야기 제목을 선택하세요:", options)
+
+# =========================
+# 랜덤 이야기 버튼
+# =========================
+if st.button("🎲 오늘의 공포 이야기"):
+    choice = random.choice(list(scary_stories.keys()))
 
 if choice != "-- 제목을 선택하세요 --":
     st.subheader(f"📖 {choice}")
