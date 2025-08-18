@@ -66,7 +66,7 @@ scary_stories = {
 }
 
 # =========================
-# 2) 피 + 글씨 깜빡임 CSS / HTML (배경 검정)
+# 2) 피 + 글씨 깜빡임 CSS / HTML (검은 배경)
 # =========================
 blood_css = """
 <style>
@@ -150,11 +150,8 @@ blood_html = """
 st.markdown(blood_css + blood_html, unsafe_allow_html=True)
 
 # =========================
-# 3) UI
+# 3) 이야기 선택 UI
 # =========================
-st.title("🩸 무서운 이야기 ")
-st.caption("검은 어둠 속에서, 피가 천천히 흘러내린다...")
-
 options = ["-- 제목을 선택하세요 --"] + list(scary_stories.keys())
 choice = st.selectbox("이야기 제목을 선택하세요:", options)
 
@@ -163,13 +160,11 @@ if choice != "-- 제목을 선택하세요 --":
     st.error(scary_stories[choice])
 
 # =========================
-# 4) 공포 앰비언스 (자동 재생 + 반복)
+# 4) 공포 브금 버튼
 # =========================
-st.markdown("### 🔊 공포 앰비언스")
-st.markdown("""
-<audio autoplay loop>
-  <source src="https://www.free-stock-music.com/downloads/spooky-ambience.mp3" type="audio/mpeg">
-  Your browser does not support the audio element.
-</audio>
-""", unsafe_allow_html=True)
-st.caption("출처: Free-Stock-Music – Spooky Ambience (Public Domain / CC0)")
+st.markdown("### 🔊 공포 브금")
+audio_url = "https://www.free-stock-music.com/downloads/spooky-ambience.mp3"
+
+if st.button("🎵 브금 재생"):
+    st.audio(audio_url, format="audio/mp3", start_time=0)
+    st.caption("브금이 재생됩니다. 🎵 출처: Free-Stock-Music – Spooky Ambience (Public Domain / CC0)")
