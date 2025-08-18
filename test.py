@@ -155,7 +155,7 @@ st.markdown(blood_css + blood_html, unsafe_allow_html=True)
 st.title(" 무서운 이야기 ")
 st.caption("검은 어둠 속에서, 피가 천천히 흘러내린다...")
 
-options = ["🩸"] + list(scary_stories.keys())
+options = ["고르시오오"] + list(scary_stories.keys())
 choice = st.selectbox("이야기 제목을 선택하세요:", options)
 
 if choice != "-- 제목을 선택하세요 --":
