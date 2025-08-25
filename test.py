@@ -11,7 +11,8 @@ game_code = """
     style="border:3px solid black; background-color:#ffe6f0; width:100%; height:80vh;"></canvas>
 <p>점수: <span id="score">0</span> | 남은 기회: <span id="lives">3</span></p>
 
-<audio id="fruitSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+<!-- 효과음 -->
+<audio id="fruitSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
 <audio id="stoneSound" src="https://actions.google.com/sounds/v1/impacts/crash.ogg"></audio>
 
 <script>
@@ -57,7 +58,7 @@ function updateItems() {
   for (let item of items) {
     item.y += item.speed + Math.floor(frame / 2000);
   }
-  if (frame % 60 === 0) { // 과일 등장 템포
+  if (frame % 60 === 0) {
     let isFruit = Math.random() < 0.7;
     let symbol = isFruit ? fruits[Math.floor(Math.random()*fruits.length)] : stone;
     items.push({
@@ -78,7 +79,7 @@ function checkCollision() {
         item.x <= basket.x + basket.width) {
       if (item.type === "fruit") {
         score += 10;
-        document.getElementById("fruitSound").play();
+        document.getElementById("fruitSound").play(); // 뿅! 소리
       } else {
         lives -= 1;
         document.getElementById("stoneSound").play();
