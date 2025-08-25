@@ -4,12 +4,12 @@ import streamlit.components.v1 as components
 st.set_page_config(page_title="과일 잡기 게임", page_icon="🍎", layout="wide")
 
 st.title("🍎 과일 잡기 게임")
-st.write("좌우 화살표 키로 바구니(🧺)를 움직여 과일을 잡으세요! (돌멩이를 3번 맞으면 게임 오버❌)")
+st.write("좌우 화살표 키로 바구니(🧺)를 움직여 과일을 잡으세요! (하트 ❤️ 3개가 다 사라지면 게임 오버❌)")
 
 game_code = """
 <canvas id="gameCanvas" 
     style="border:3px solid black; background-color:#ffe6f0; width:100%; height:80vh;"></canvas>
-<p>점수: <span id="score">0</span> | 남은 기회: <span id="lives">3</span></p>
+<p>점수: <span id="score">0</span></p>
 
 <!-- 효과음 -->
 <audio id="fruitSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
@@ -98,9 +98,18 @@ function updateBasket() {
   if (basket.x + basket.width > canvas.width) basket.x = canvas.width - basket.width;
 }
 
-function drawScore() {
+function drawScoreAndLives() {
+  // 점수
   document.getElementById("score").textContent = score;
-  document.getElementById("lives").textContent = lives;
+
+  // 하트
+  ctx.font = "40px Arial";
+  ctx.fillStyle = "red";
+  let hearts = "";
+  for (let i = 0; i < lives; i++) {
+    hearts += "❤️ ";
+  }
+  ctx.fillText(hearts, 20, 50);
 }
 
 function gameLoop() {
@@ -121,7 +130,7 @@ function gameLoop() {
   updateItems();
   checkCollision();
   updateBasket();
-  drawScore();
+  drawScoreAndLives();
 
   frame++;
   requestAnimationFrame(gameLoop);
