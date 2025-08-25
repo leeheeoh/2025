@@ -1,70 +1,82 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-st.set_page_config(page_title="장애물 피하기 게임", page_icon="🏃", layout="centered")
+st.set_page_config(page_title="과일 잡기 게임", page_icon="🍎", layout="centered")
 
-st.title("🏃 장애물 피하기 게임")
-st.write("스페이스바를 눌러 점프해서 장애물을 피해보세요!")
+st.title("🍎 과일 잡기 게임")
+st.write("좌우 화살표 키로 바구니를 움직여 과일을 잡으세요! (돌멩이는 피하세요❌)")
 
-# HTML + JS 코드
 game_code = """
-<canvas id="gameCanvas" width="600" height="200" 
-    style="border:2px solid black; background-color: #f0f0f0"></canvas>
+<canvas id="gameCanvas" width="400" height="400" 
+    style="border:2px solid black; background-color: #e6f7ff"></canvas>
 <p>점수: <span id="score">0</span></p>
 
 <script>
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-let player = {x: 50, y: 150, width: 20, height: 20, dy: 0, jump: -8, gravity: 0.4, onGround: true};
-let obstacles = [];
-let frame = 0;
+let basket = {x: 160, y: 360, width: 80, height: 20, dx: 0};
+let items = [];
 let score = 0;
+let frame = 0;
 let gameOver = false;
 
-function drawPlayer() {
-  ctx.fillStyle = "blue";
-  ctx.fillRect(player.x, player.y, player.width, player.height);
+function drawBasket() {
+  ctx.fillStyle = "brown";
+  ctx.fillRect(basket.x, basket.y, basket.width, basket.height);
 }
 
-function drawObstacles() {
-  ctx.fillStyle = "red";
-  for (let obs of obstacles) {
-    ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
-  }
-}
-
-function updatePlayer() {
-  player.y += player.dy;
-  if (player.y + player.height < canvas.height) {
-    player.dy += player.gravity;
-    player.onGround = false;
-  } else {
-    player.y = canvas.height - player.height;
-    player.dy = 0;
-    player.onGround = true;
+function drawItems() {
+  for (let item of items) {
+    if (item.type === "fruit") {
+      ctx.fillStyle = "red";  // 과일 = 빨강
+    } else {
+      ctx.fillStyle = "gray"; // 돌멩이 = 회색
+    }
+    ctx.beginPath();
+    ctx.arc(item.x, item.y, item.size, 0, Math.PI * 2);
+    ctx.fill();
   }
 }
 
-function updateObstacles() {
-  for (let obs of obstacles) {
-    obs.x -= 4;
+function updateItems() {
+  for (let item of items) {
+    item.y += item.speed;
   }
-  if (frame % 90 === 0) {
-    obstacles.push({x: canvas.width, y: 170, width: 20, height: 30});
+  // 아이템 추가
+  if (frame % 50 === 0) {
+    let type = Math.random() < 0.7 ? "fruit" : "stone"; 
+    items.push({
+      x: Math.random() * (canvas.width - 20) + 10,
+      y: 0,
+      size: 10,
+      speed: 3 + Math.random() * 2,
+      type: type
+    });
   }
-  obstacles = obstacles.filter(obs => obs.x + obs.width > 0);
+  // 화면 밖 제거
+  items = items.filter(item => item.y < canvas.height + 20);
 }
 
 function checkCollision() {
-  for (let obs of obstacles) {
-    if (player.x < obs.x + obs.width &&
-        player.x + player.width > obs.x &&
-        player.y < obs.y + obs.height &&
-        player.y + player.height > obs.y) {
-      gameOver = true;
+  for (let item of items) {
+    if (item.y + item.size >= basket.y &&
+        item.x >= basket.x &&
+        item.x <= basket.x + basket.width) {
+      if (item.type === "fruit") {
+        score += 10;
+      } else {
+        score -= 5;
+      }
+      item.y = canvas.height + 100; // 사라지게
     }
   }
+}
+
+function updateBasket() {
+  basket.x += basket.dx;
+  if (basket.x < 0) basket.x = 0;
+  if (basket.x + basket.width > canvas.width) basket.x = canvas.width - basket.width;
 }
 
 function drawScore() {
@@ -72,22 +84,15 @@ function drawScore() {
 }
 
 function gameLoop() {
-  if (gameOver) {
-    ctx.fillStyle = "black";
-    ctx.font = "30px Arial";
-    ctx.fillText("Game Over!", 220, 100);
-    return;
-  }
+  if (gameOver) return;
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  drawPlayer();
-  drawObstacles();
-
-  updatePlayer();
-  updateObstacles();
+  
+  drawBasket();
+  drawItems();
+  updateItems();
   checkCollision();
-
-  if (frame % 10 === 0) score++;
+  updateBasket();
   drawScore();
 
   frame++;
@@ -95,13 +100,16 @@ function gameLoop() {
 }
 
 document.addEventListener("keydown", function(e) {
-  if (e.code === "Space" && player.onGround) {
-    player.dy = player.jump;
-  }
+  if (e.code === "ArrowLeft") basket.dx = -5;
+  if (e.code === "ArrowRight") basket.dx = 5;
+});
+
+document.addEventListener("keyup", function(e) {
+  if (e.code === "ArrowLeft" || e.code === "ArrowRight") basket.dx = 0;
 });
 
 gameLoop();
 </script>
 """
 
-components.html(game_code, height=300)
+components.html(game_code, height=500)
