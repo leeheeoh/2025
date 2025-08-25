@@ -8,8 +8,7 @@ st.write("좌우 화살표 키로 바구니(🧺)를 움직여 과일을 잡으�
 
 game_code = """
 <canvas id="gameCanvas" 
-    style="border:3px solid black; background: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1350&q=80'); 
-           background-size: cover; width:100%; height:80vh;"></canvas>
+    style="border:3px solid black; background-color:#ffe6f0; width:100%; height:80vh;"></canvas>
 <p>점수: <span id="score">0</span> | 남은 기회: <span id="lives">3</span></p>
 
 <audio id="fruitSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
@@ -43,7 +42,7 @@ const fruits = ["🍎","🍌","🍊","🍇","🍓","🍍"];
 const stone = "🪨";
 
 function drawBasket() {
-  ctx.font = "80px Arial";   // 바구니 크게
+  ctx.font = "80px Arial";   // 큰 바구니
   ctx.fillText(basket.symbol, basket.x, basket.y + basket.height);
 }
 
@@ -56,15 +55,15 @@ function drawItems() {
 
 function updateItems() {
   for (let item of items) {
-    item.y += item.speed + Math.floor(frame / 1000);
+    item.y += item.speed + Math.floor(frame / 2000);
   }
-  if (frame % 40 === 0) {
+  if (frame % 60 === 0) { // 과일 등장 템포
     let isFruit = Math.random() < 0.7;
     let symbol = isFruit ? fruits[Math.floor(Math.random()*fruits.length)] : stone;
     items.push({
       x: Math.random() * (canvas.width - 40) + 20,
       y: 0,
-      speed: 4 + Math.random() * 3,
+      speed: 2 + Math.random(),   // 천천히
       type: isFruit ? "fruit" : "stone",
       symbol: symbol
     });
@@ -106,7 +105,7 @@ function drawScore() {
 function gameLoop() {
   if (gameOver) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "black";
     ctx.font = "60px Arial";
     ctx.fillText("GAME OVER", canvas.width/2 - 180, canvas.height/2);
     ctx.font = "40px Arial";
